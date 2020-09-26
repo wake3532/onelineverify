@@ -1,5 +1,6 @@
 import discord
 import asyncio
+import os
 
 ############# 중요한 부분 #############
 
