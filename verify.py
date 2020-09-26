@@ -9,7 +9,7 @@ from urllib.request import Request
 from urllib import parse
 import bs4
 import time
-
+importy Capcha
 
 client = discord.Client()
 
