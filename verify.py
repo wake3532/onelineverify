@@ -9,8 +9,7 @@ from urllib.request import Request
 from urllib import parse
 import bs4
 import time
-importy Capcha
-
+import CAPTCHA
 client = discord.Client()
 
 owner = ['724769557759393837']
