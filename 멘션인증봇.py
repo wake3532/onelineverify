@@ -13,7 +13,8 @@ youanot = "당신은 사용할 권한이 없습니다." #권한이 없는 멤버
 
 giverole = "692408623892135947" #인증 대상에게 주어질 역할
 
-BOT_TOKEN = "NzU4NTczNzk4MzgyODk1MTI1.X2w65w.Unbqo98V4-7CFGlmHGA4bz6uA4M" #봇 토큰
+access_token = os.environ["BOT_TOKEN"]
+client.run(access_token) #봇 토큰
 
 ####################################
 
@@ -38,6 +39,6 @@ class chatbot(discord.Client):
             else:
                 await message.channel.send(youanot)
                 
-if __name__ == "__main__":
-    client = chatbot()
-    client.run('NzU4NTczNzk4MzgyODk1MTI1.X2w65w.Unbqo98V4-7CFGlmHGA4bz6uA4M')
+
+access_token = os.environ["BOT_TOKEN"]
+client.run(access_token)
