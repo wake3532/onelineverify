@@ -1,8 +1,3 @@
-
-# 필수설치 모듈
-#pip install discord.py
-#pip install captcha
-
 import discord
 from captcha.image import ImageCaptcha
 import random
