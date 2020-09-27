@@ -41,14 +41,14 @@ async def on_message(message):
             embed = discord.Embed(title="실패!", description = message.author.mention + ", __**Captcha**__ 인증시간 ( 10초 ) 를 초과했어요.", timestamp=message.created_at,
             colour=discord.Colour.orange()
     )
-            embed.set_footer(text="Space BOT#2204", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
+            embed.set_footer(text="원라인 인증 도우미", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
             await message.channel.send(embed=embed)
 
         if msg.content == a:
             embed = discord.Embed(title="성공!", description = message.author.mention + ", __**Captcha**__ 인증코드를 정확히 입력하여 USER 권한이 지급되었어요!", timestamp=message.created_at,
             colour=discord.Colour.green()
     )
-            embed.set_footer(text="Sky BOT#2204", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
+            embed.set_footer(text="S원라인 인증 도우미", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
             await message.channel.send(embed=embed)
             role = discord.utils.get(message.author.guild.roles, name='🐥ㅣ시민')
             await message.author.add_roles(role)
