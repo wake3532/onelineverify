@@ -1,86 +1,69 @@
+
+# 필수설치 모듈
+#pip install discord.py
+#pip install captcha
+
 import discord
-from discord.ext import commands
-import os
-import asyncio
-import random
-import urllib
-from bs4 import BeautifulSoup
-from urllib.request import Request
-from urllib import parse
-import bs4
-import time
 from captcha.image import ImageCaptcha
+import random
+import time
+import os
 
 client = discord.Client()
 
-owner = ['724769557759393837']
 @client.event
 async def on_ready():
-    print('봇이 로그인 하였습니다.')
-    print(' ')
-    print('닉네임 : {}'.format(client.user.name))
-    print('아이디 : {}'.format(client.user.id))
+    print("인증 봇이 정상적으로 실행되었습니다.")
+    game = discord.Game('원라인 인증 하는중 ! ')
+    await client.change_presence(status=discord.Status.online, activity=game)
 
 @client.event
-async def on_ready():
-    print('봇이 로그인 하였습니다.')
-    print(' ')
-    print('닉네임 : {}'.format(client.user.name))
-    print('아이디 : {}'.format(client.user.id))
-    while True:
-        user = len(client.users)
-        server = len(client.guilds)
-        messages = ["원라인 많이 이용해주세요", "원라인 인증" , "!인증" , str(user) + "분이 인증을 완료 하셨습니다.", str(server) + "님이 인증을 완료 못 하셨어요"]
-        for (m) in range(5):
-            await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(name=messages[(m)], type=discord.ActivityType.watching))
-            await asyncio.sleep(4)
-            
-@client.event
 async def on_message(message):
-  if message.content == "!인증":
-        Image_captcha = ImageCaptcha()
-        msg = ""
+    if message.content.startswith("!인증"): #명령어 /인증
         a = ""
+        Captcha_img = ImageCaptcha()
         for i in range(6):
             a += str(random.randint(0, 9))
 
-        name = "Captcha.png"
-        Image_captcha.write(a, name)
+        name = str(message.author.id) + ".png"
+        Captcha_img.write(a, name)
 
+        await message.channel.send(f"""{message.author.mention} 아래 숫자를 10초 내에 입력해주세요. """)
         await message.channel.send(file=discord.File(name))
-        embed = discord.Embed(title="당신의 요청으로 인증코드가 만들어졌습니다.", description = message.author.mention + ", 위에 있는 인증코드를 20초내에 입력해주세요.", timestamp=message.created_at,
-        colour=discord.Colour.blurple()
-    )
-        embed.set_footer(text="원라인에 오신것을 진심으로 환영합니다.", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
-        await message.channel.send(embed=embed)
 
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
 
         try:
-            msg = await client.wait_for("message", timeout=10, check=check)
+            msg = await client.wait_for("message", timeout=10, check=check) # 제한시간 10초
         except:
-            embed = discord.Embed(title="실패!", description = message.author.mention + ", __**Captcha**__ 인증시간 ( 20초 ) 를 초과했어요.", timestamp=message.created_at,
-            colour=discord.Colour.orange()
-    )
-            embed.set_footer(text="아쉬워요 하지만 다시 할 수 있어요", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
-            await message.channel.send(embed=embed)
+            await message.channel.purge(limit=3)
+            chrhkEmbed = discord.Embed(title='❌ 인증실패', color=0xFF0000)
+            chrhkEmbed.add_field(name='닉네임', value=message.author, inline=False)
+            chrhkEmbed.add_field(name='이유', value='시간초과', inline=False)
+            await message.channel.send(embed=chrhkEmbed)
+            print(f'{message.author} 님이 시간초과로 인해 인증을 실패함.')
+            return
 
         if msg.content == a:
-            embed = discord.Embed(title="성공!", description = message.author.mention + ", __**Captcha**__ 인증코드를 정확히 입력하여 USER 권한이 지급되었어요! 좋은 시간 되세요 :) 규칙은 확인하셨지요?", timestamp=message.created_at,
-            colour=discord.Colour.green()
-    )
-            embed.set_footer(text="즐거운 하루 되시고 상대방에게 말을 조심하세요. 규칙을 확인하세요 ;)", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
-            await message.channel.send(embed=embed)
-            role = discord.utils.get(message.author.guild.roles, name='🐥ㅣ시민')
+            role = discord.utils.get(message.guild.roles, name="🐥ㅣ시민")
+            await message.channel.purge(limit=4)
+            tjdrhdEmbed = discord.Embed(title='인증성공', color=0x04FF00)
+            tjdrhdEmbed.add_field(name='닉네임', value=message.author, inline=False)
+            tjdrhdEmbed.add_field(name='5초후 인증역할이 부여됩니다.', value='** **', inline=False)
+            tjdrhdEmbed.set_thumbnail(url=message.author.avatar_url)
+            await message.channel.send(embed=tjdrhdEmbed)
+            time.sleep(5)
             await message.author.add_roles(role)
-        
         else:
-            embed = discord.Embed(title="실패!", description = message.author.mention + ", __**Captcha**__ 인증코드가 올바르지 않아요! 다시 시도해봐요.", timestamp=message.created_at,
-            colour=discord.Colour.red()
-    )
-            embed.set_footer(text="아쉬워요 하지만 다시 가능하답니다 ;)", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
-            await message.channel.send(embed=embed)
-            
-access_token = os.environ["BOT_TOKEN"]
-client.run(access_token)
+            await message.channel.purge(limit=4)
+            tlfvoEmbed = discord.Embed(title='❌ 인증실패', color=0xFF0000)
+            tlfvoEmbed.add_field(name='닉네임', value=message.author, inline=False)
+            tlfvoEmbed.add_field(name='이유', value='잘못된 숫자', inline=False)
+            await message.channel.send(embed=tlfvoEmbed)
+            print(f'{message.author} 님이 잘못된 숫자로 인해 인증을 실패함.')
+
+client.run('NzU4NTczNzk4MzgyODk1MTI1.X2w65w.ROuzO1SXN3UbsZlvQ9n3sL5o4w0')
+
+
+a
