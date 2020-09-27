@@ -3,6 +3,7 @@ from captcha.image import ImageCaptcha
 import time
 import os
 import captcha
+import random
 
 client = discord.Client()
 
