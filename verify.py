@@ -15,49 +15,51 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content.startswith("!인증"): #명령어 /인증
+    if message.content == "!인증":
+        Image_captcha = ImageCaptcha()
+        msg = ""
         a = ""
-        Captcha_img = ImageCaptcha()
         for i in range(6):
             a += str(random.randint(0, 9))
 
-        name = str(message.author.id) + ".png"
-        Captcha_img.write(a, name)
+        name = "Captcha.png"
+        Image_captcha.write(a, name)
 
-        await message.channel.send(f"""{message.author.mention} 아래 숫자를 10초 내에 입력해주세요. """)
         await message.channel.send(file=discord.File(name))
+        embed = discord.Embed(title="인증코드가 만들어졌어요.", description = message.author.mention + ", 위에 있는 인증코드를 10초내에 입력해주세요.", timestamp=message.created_at,
+        colour=discord.Colour.blurple()
+    )
+        embed.set_footer(text="10초 후에 만료되요 ! ", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
+        await message.channel.send(embed=embed)
 
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
 
         try:
-            msg = await client.wait_for("message", timeout=10, check=check) # 제한시간 10초
+            msg = await client.wait_for("message", timeout=10, check=check)
         except:
-            await message.channel.purge(limit=3)
-            chrhkEmbed = discord.Embed(title='❌ 인증실패', color=0xFF0000)
-            chrhkEmbed.add_field(name='닉네임', value=message.author, inline=False)
-            chrhkEmbed.add_field(name='이유', value='시간초과', inline=False)
-            await message.channel.send(embed=chrhkEmbed)
-            print(f'{message.author} 님이 시간초과로 인해 인증을 실패함.')
-            return
+            embed = discord.Embed(title="실패!", description = message.author.mention + ", __**Captcha**__ 인증시간 ( 10초 ) 를 초과했어요.", timestamp=message.created_at,
+            colour=discord.Colour.orange()
+    )
+            embed.set_footer(text="Space BOT#2204", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
+            await message.channel.send(embed=embed)
 
         if msg.content == a:
-            role = discord.utils.get(message.guild.roles, name="🐥ㅣ시민")
-            await message.channel.purge(limit=4)
-            tjdrhdEmbed = discord.Embed(title='인증성공', color=0x04FF00)
-            tjdrhdEmbed.add_field(name='닉네임', value=message.author, inline=False)
-            tjdrhdEmbed.add_field(name='5초후 인증역할이 부여됩니다.', value='** **', inline=False)
-            tjdrhdEmbed.set_thumbnail(url=message.author.avatar_url)
-            await message.channel.send(embed=tjdrhdEmbed)
-            time.sleep(5)
+            embed = discord.Embed(title="성공!", description = message.author.mention + ", __**Captcha**__ 인증코드를 정확히 입력하여 USER 권한이 지급되었어요!", timestamp=message.created_at,
+            colour=discord.Colour.green()
+    )
+            embed.set_footer(text="Sky BOT#2204", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
+            await message.channel.send(embed=embed)
+            role = discord.utils.get(message.author.guild.roles, name='🐥ㅣ시민')
             await message.author.add_roles(role)
+        
         else:
-            await message.channel.purge(limit=4)
-            tlfvoEmbed = discord.Embed(title='❌ 인증실패', color=0xFF0000)
-            tlfvoEmbed.add_field(name='닉네임', value=message.author, inline=False)
-            tlfvoEmbed.add_field(name='이유', value='잘못된 숫자', inline=False)
-            await message.channel.send(embed=tlfvoEmbed)
-            print(f'{message.author} 님이 잘못된 숫자로 인해 인증을 실패함.')
+            embed = discord.Embed(title="실패!", description = message.author.mention + ", __**Captcha**__ 인증코드가 올바르지 않아요! 다시 시도해봐요.", timestamp=message.created_at,
+            colour=discord.Colour.red()
+    )
+            embed.set_footer(text="음.. 다시 해봐요", icon_url="https://cdn.discordapp.com/avatars/736135672842420326/79ee3eb1c9e30f6f3f61562e45c02274.webp?size=1024")
+            await message.channel.send(embed=embed)
+            
 
 access_token = os.environ["BOT_TOKEN"]
 client.run(access_token)
