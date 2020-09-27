@@ -26,19 +26,19 @@ async def on_message(message):
         Image_captcha.write(a, name)
 
         await message.channel.send(file=discord.File(name))
-        embed = discord.Embed(title="인증코드가 만들어졌어요.", description = message.author.mention + ", 위에 있는 인증코드를 10초내에 입력해주세요.", timestamp=message.created_at,
+        embed = discord.Embed(title="인증코드가 만들어졌어요.", description = message.author.mention + ", 위에 있는 인증코드를 20초내에 입력해주세요.", timestamp=message.created_at,
         colour=discord.Colour.blurple()
     )
-        embed.set_footer(text="10초 후에 만료되요 ! ", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
+        embed.set_footer(text="20초 후에 만료되요 ! ", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
         await message.channel.send(embed=embed)
 
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
 
         try:
-            msg = await client.wait_for("message", timeout=10, check=check)
+            msg = await client.wait_for("message", timeout=20, check=check)
         except:
-            embed = discord.Embed(title="실패!", description = message.author.mention + ", __**Captcha**__ 인증시간 ( 10초 ) 를 초과했어요.", timestamp=message.created_at,
+            embed = discord.Embed(title="실패!", description = message.author.mention + ", __**Captcha**__ 인증시간 ( 20초 ) 를 초과했어요.", timestamp=message.created_at,
             colour=discord.Colour.orange()
     )
             embed.set_footer(text="원라인 인증 도우미", icon_url="https://media.discordapp.net/attachments/735766686090788874/759404838404227072/e6f11eee6427bcbd.png")
